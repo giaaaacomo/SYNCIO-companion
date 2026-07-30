@@ -1,25 +1,27 @@
 <h1 align="center">
   <br>
-  <img alt="Universal Trakt Scrobbler" src="https://github.com/trakt-tools/universal-trakt-scrobbler/raw/master/src/images/uts-icon-128.png" width="150">
+  <img alt="SYNCIO Companion" src="src/images/uts-icon-128.png" width="150">
   <br>
-  Universal Trakt Scrobbler
+  SYNCIO Companion
   <br>
 </h1>
-<h4 align="center">A universal scrobbler for Trakt.tv.</h4>
-<p align="center">
-  <a href="https://github.com/trakt-tools/universal-trakt-scrobbler/releases">
-    <img alt="GitHub Release" src="https://img.shields.io/github/release/trakt-tools/universal-trakt-scrobbler.svg">
-  </a>
-	<a href="https://crowdin.com/project/universal-trakt-scrobbler" title="Crowdin" target="_blank">
-		<img src="https://badges.crowdin.net/universal-trakt-scrobbler/localized.svg">
-	</a>
-</p>
-<p align="center">
-  <a href="https://chrome.google.com/webstore/detail/universal-trakt-scrobbler/mbhadeogepkjdjeikcckdkjdjhhkhlid"><img src="https://github.com/trakt-tools/universal-trakt-scrobbler/raw/master/assets/chrome-badge.png" alt="Get the extension on Chrome"></a>
-  <a href="https://addons.mozilla.org/en-US/firefox/addon/universal-trakt-scrobbler"><img src="https://github.com/trakt-tools/universal-trakt-scrobbler/raw/master/assets/firefox-badge.png" alt="Get the extension on Firefox"></a>
-</p>
+<h4 align="center">Native streaming history for a self-hosted SYNCIO instance.</h4>
 
-You can also install the extension manually by downloading the zip for your browser here: https://github.com/trakt-tools/universal-trakt-scrobbler/releases
+> [!IMPORTANT]
+> This is an experimental fork of
+> [Universal Trakt Scrobbler](https://github.com/trakt-tools/universal-trakt-scrobbler).
+> Its original project and streaming-service adapters are the work of the `trakt-tools`
+> contributors. The SYNCIO integration is developed separately with substantial AI-assisted,
+> conversational coding. Read the [fork notes](docs/SYNCIO_FORK.md) for attribution, privacy
+> boundaries and the upstream update strategy.
+
+The `syncio` branch is currently a development build and is not published in a browser store.
+Release packages will be published in this repository after the privacy and matching workflow has
+passed end-to-end testing. Until then, contributors can build and load it manually.
+
+SYNCIO Companion reads viewing activity exposed by a streaming platform while the user is signed
+in. It does **not** read browser navigation history. A short accidental page visit is therefore not
+treated as a completed watch; completion must be supported by native platform progress or status.
 
 ### Loading the extension manually in Chrome
 
@@ -56,7 +58,10 @@ Extension will be enabled until you restart Firefox.
 
 ### What is Universal Trakt Scrobbler?
 
-An extension that allows you to automatically scrobble TV shows and movies that you are watching, and sync your history, from your favorite streaming services to Trakt.tv.
+Universal Trakt Scrobbler is the upstream extension on which SYNCIO Companion is based. It allows
+users to scrobble TV shows and movies and synchronize supported streaming-service histories with
+Trakt.tv. SYNCIO Companion reuses its service adapters but adds a separate, privacy-bounded route to
+the user's own SYNCIO Worker.
 
 ### Why do I need this extension?
 

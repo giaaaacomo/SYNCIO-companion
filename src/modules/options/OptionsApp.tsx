@@ -4,6 +4,7 @@ import { CustomSnackbar } from '@components/CustomSnackbar';
 import { OptionsActions } from '@components/OptionsActions';
 import { OptionsHeader } from '@components/OptionsHeader';
 import { OptionsList } from '@components/OptionsList';
+import { SyncioConnectionPanel } from '@components/SyncioConnectionPanel';
 import { Container } from '@mui/material';
 
 export const OptionsApp = (): JSX.Element => {
@@ -16,6 +17,7 @@ export const OptionsApp = (): JSX.Element => {
 					paddingBottom: '100px',
 				}}
 			>
+				<SyncioConnectionPanel />
 				<OptionsList details={Shared.storage.optionsDetails} />
 				<OptionsActions />
 				<CustomDialog />

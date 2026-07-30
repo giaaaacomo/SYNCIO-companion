@@ -48,6 +48,12 @@ export interface BaseItemValues {
 	suggestions?: Suggestion[] | null;
 	imageUrl?: string | null;
 	isLoading?: boolean;
+	sourceCompletionEvidence?: SourceCompletionEvidence;
+}
+
+export interface SourceCompletionEvidence {
+	progressReliable: boolean;
+	platformMarkedCompleted?: boolean;
 }
 
 export interface EpisodeItemValues extends BaseItemValues {
@@ -100,6 +106,7 @@ abstract class BaseItem implements BaseItemValues {
 	suggestions?: Suggestion[] | null;
 	imageUrl?: string | null;
 	isLoading: boolean;
+	sourceCompletionEvidence?: SourceCompletionEvidence;
 	trakt?: TraktItem | null;
 
 	constructor(values: BaseItemValues) {
@@ -114,6 +121,7 @@ abstract class BaseItem implements BaseItemValues {
 		this.suggestions = values.suggestions;
 		this.imageUrl = values.imageUrl;
 		this.isLoading = values.isLoading ?? false;
+		this.sourceCompletionEvidence = values.sourceCompletionEvidence;
 		this.id = values.id || this.generateId();
 	}
 
@@ -128,6 +136,7 @@ abstract class BaseItem implements BaseItemValues {
 			index: this.index,
 			suggestions: this.suggestions,
 			imageUrl: this.imageUrl,
+			sourceCompletionEvidence: this.sourceCompletionEvidence,
 		};
 	}
 

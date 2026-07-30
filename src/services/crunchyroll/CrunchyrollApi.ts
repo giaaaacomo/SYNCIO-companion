@@ -187,6 +187,10 @@ class _CrunchyrollApi extends ServiceApi {
 					progress: historyItem.fully_watched
 						? 100
 						: (historyItem.playhead / metadata.duration_ms) * 100,
+					sourceCompletionEvidence: {
+						progressReliable: true,
+						platformMarkedCompleted: historyItem.fully_watched,
+					},
 				});
 				items.push(item);
 			} else {
@@ -207,6 +211,10 @@ class _CrunchyrollApi extends ServiceApi {
 					progress: historyItem.fully_watched
 						? 100
 						: (historyItem.playhead / metadata.duration_ms) * 100,
+					sourceCompletionEvidence: {
+						progressReliable: true,
+						platformMarkedCompleted: historyItem.fully_watched,
+					},
 					show: {
 						id: metadata.series_id,
 						serviceId: this.id,

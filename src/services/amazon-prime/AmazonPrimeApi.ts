@@ -11,6 +11,7 @@ export interface AmazonPrimeSession extends ServiceApiSession {}
 export interface AmazonPrimeHistoryItem {
 	id: string;
 	progress: number;
+	progressReliable: boolean;
 	watchedAt: number;
 }
 
@@ -259,7 +260,10 @@ class _AmazonPrimeApi extends ServiceApi {
 		if (historyWidget) {
 			const { content } = historyWidget.content;
 			if ('titles' in content) {
-				const partialHistoryItems: SetOptional<AmazonPrimeHistoryItem, 'progress'>[] = [];
+				const partialHistoryItems: SetOptional<
+					AmazonPrimeHistoryItem,
+					'progress' | 'progressReliable'
+				>[] = [];
 
 				const historyResponseItems = content.titles
 					.map((titles) => this.flattenHistoryResponseItems(titles.titles))
@@ -288,6 +292,7 @@ class _AmazonPrimeApi extends ServiceApi {
 					historyItems.push({
 						...partialHistoryItem,
 						progress: enrichments?.progress?.percentage ?? 100,
+						progressReliable: typeof enrichments?.progress?.percentage === 'number',
 					});
 				}
 
@@ -336,6 +341,9 @@ class _AmazonPrimeApi extends ServiceApi {
 			const item = await this.getItem(historyItem.id, true);
 			if (item) {
 				item.progress = historyItem.progress;
+				item.sourceCompletionEvidence = {
+					progressReliable: historyItem.progressReliable,
+				};
 				item.watchedAt = Utils.unix(historyItem.watchedAt);
 				items.push(item);
 			}
@@ -350,6 +358,9 @@ class _AmazonPrimeApi extends ServiceApi {
 	): Promisable<void> {
 		item.watchedAt = Utils.unix(historyItem.watchedAt);
 		item.progress = historyItem.progress;
+		item.sourceCompletionEvidence = {
+			progressReliable: historyItem.progressReliable,
+		};
 	}
 
 	async getItem(id: string, isHistoryItem = false): Promise<ScrobbleItem | null> {

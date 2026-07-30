@@ -108,6 +108,7 @@ const getWebpackConfig = (env: Environment): webpack.Configuration => {
 			popup: ['./src/modules/popup/popup.tsx'],
 			history: ['./src/modules/history/history.tsx'],
 			options: ['./src/modules/options/options.tsx'],
+			'syncio-import': ['./src/modules/syncio-import/syncio-import.tsx'],
 			'kino-pub-auth': ['./src/modules/kino-pub-auth/kino-pub-auth.tsx'],
 			...serviceEntries,
 		},
@@ -174,7 +175,7 @@ const getWebpackConfig = (env: Environment): webpack.Configuration => {
 				new plugins.html({
 					template: './src/templates/main.pug',
 					templateParameters: {
-						title: `${titlePrefix}Universal Trakt Scrobbler - Popup`,
+						title: `${titlePrefix}SYNCIO Companion - Popup`,
 						script: 'popup.js',
 					},
 					filename: 'popup.html',
@@ -183,7 +184,7 @@ const getWebpackConfig = (env: Environment): webpack.Configuration => {
 				new plugins.html({
 					template: './src/templates/main.pug',
 					templateParameters: {
-						title: `${titlePrefix}Universal Trakt Scrobbler - History`,
+						title: `${titlePrefix}SYNCIO Companion - History`,
 						script: 'history.js',
 					},
 					filename: 'history.html',
@@ -192,10 +193,19 @@ const getWebpackConfig = (env: Environment): webpack.Configuration => {
 				new plugins.html({
 					template: './src/templates/main.pug',
 					templateParameters: {
-						title: `${titlePrefix}Universal Trakt Scrobbler - Options`,
+						title: `${titlePrefix}SYNCIO Companion - Options`,
 						script: 'options.js',
 					},
 					filename: 'options.html',
+					inject: false,
+				}),
+				new plugins.html({
+					template: './src/templates/main.pug',
+					templateParameters: {
+						title: `${titlePrefix}SYNCIO Companion - Streaming History`,
+						script: 'syncio-import.js',
+					},
+					filename: 'syncio-import.html',
 					inject: false,
 				}),
 				new plugins.html({
@@ -236,9 +246,9 @@ const getManifest = (browserName: string, isDev: boolean): string => {
 		key?: string;
 		optional_host_permissions?: string[];
 	} = {
-		name: isDev ? '[dev] Universal Trakt Scrobbler' : 'Universal Trakt Scrobbler',
+		name: isDev ? '[dev] SYNCIO Companion' : 'SYNCIO Companion',
 		version: packageJson.version,
-		description: '__MSG_appDescription__',
+		description: 'Preview native streaming history in your self-hosted SYNCIO instance.',
 		icons: {
 			16: 'images/uts-icon-16.png',
 			128: 'images/uts-icon-128.png',
@@ -261,6 +271,9 @@ const getManifest = (browserName: string, isDev: boolean): string => {
 			manifest.optional_permissions = ['notifications'];
 			manifest.optional_host_permissions = [
 				'*://api.rollbar.com/*',
+				'https://*/*',
+				'http://localhost/*',
+				'http://127.0.0.1/*',
 				...Object.values(services)
 					.map((service) => service.hostPatterns)
 					.flat(),
@@ -277,7 +290,7 @@ const getManifest = (browserName: string, isDev: boolean): string => {
 					38: 'images/uts-icon-38.png',
 				},
 				default_popup: 'popup.html',
-				default_title: isDev ? '[dev] Universal Trakt Scrobbler' : 'Universal Trakt Scrobbler',
+				default_title: isDev ? '[dev] SYNCIO Companion' : 'SYNCIO Companion',
 			};
 			if (process.env.CHROME_EXTENSION_KEY) {
 				manifest.key = process.env.CHROME_EXTENSION_KEY;
@@ -297,6 +310,9 @@ const getManifest = (browserName: string, isDev: boolean): string => {
 				'webRequest',
 				'webRequestBlocking',
 				'*://api.rollbar.com/*',
+				'https://*/*',
+				'http://localhost/*',
+				'http://127.0.0.1/*',
 				...Object.values(services)
 					.map((service) => service.hostPatterns)
 					.flat(),
@@ -316,7 +332,7 @@ const getManifest = (browserName: string, isDev: boolean): string => {
 					38: 'images/uts-icon-38.png',
 				},
 				default_popup: 'popup.html',
-				default_title: isDev ? '[dev] Universal Trakt Scrobbler' : 'Universal Trakt Scrobbler',
+				default_title: isDev ? '[dev] SYNCIO Companion' : 'SYNCIO Companion',
 			};
 			// Uncomment this to connect to react-devtools
 			// manifest.content_security_policy =

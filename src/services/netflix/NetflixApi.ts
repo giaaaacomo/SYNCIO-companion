@@ -343,6 +343,9 @@ class _NetflixApi extends ServiceApi {
 		const calculatedProgress = hasValidData ? Math.ceil((bookmark / duration) * 100) : 100;
 
 		item.progress = calculatedProgress;
+		item.sourceCompletionEvidence = {
+			progressReliable: hasValidData,
+		};
 	}
 
 	/**
@@ -536,6 +539,9 @@ class _NetflixApi extends ServiceApi {
 				number,
 				watchedAt,
 				progress,
+				sourceCompletionEvidence: {
+					progressReliable: hasValidData,
+				},
 				show: {
 					serviceId,
 					title,
@@ -551,6 +557,9 @@ class _NetflixApi extends ServiceApi {
 				year,
 				watchedAt,
 				progress,
+				sourceCompletionEvidence: {
+					progressReliable: hasValidData,
+				},
 			});
 		}
 		return item;
