@@ -261,6 +261,10 @@ const getManifest = (browserName: string, isDev: boolean): string => {
 			},
 		],
 		default_locale: 'en',
+		options_ui: {
+			page: 'options.html',
+			open_in_tab: true,
+		},
 	};
 	switch (browserName) {
 		case 'chrome': {

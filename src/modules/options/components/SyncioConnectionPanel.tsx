@@ -1,10 +1,11 @@
-import { SyncioClient } from '@/syncio/SyncioClient';
+import { SyncioClient, SyncioUpdateStatus } from '@/syncio/SyncioClient';
 import { SyncioConnection, SyncioStorage } from '@/syncio/SyncioStorage';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LinkIcon from '@mui/icons-material/Link';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Alert, Box, Button, CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import { FormEvent, useEffect, useState } from 'react';
 import browser from 'webextension-polyfill';
@@ -18,12 +19,14 @@ export const SyncioConnectionPanel = (): JSX.Element => {
 	const [code, setCode] = useState('');
 	const [label, setLabel] = useState(defaultDeviceLabel());
 	const [message, setMessage] = useState('');
+	const [update, setUpdate] = useState<SyncioUpdateStatus | null>(null);
 
 	const checkConnection = async (stored?: SyncioConnection | null) => {
 		const current = stored === undefined ? await SyncioStorage.getConnection() : stored;
 		setConnection(current);
 		if (!current) {
 			setState('disconnected');
+			setUpdate(null);
 			return;
 		}
 		setState('loading');
@@ -33,6 +36,11 @@ export const SyncioConnectionPanel = (): JSX.Element => {
 			await client.status();
 			setState('connected');
 			setMessage('');
+			try {
+				setUpdate(await client.updateStatus());
+			} catch {
+				setUpdate(null);
+			}
 		} catch (error) {
 			setState('error');
 			setMessage(error instanceof Error ? error.message : 'Could not reach the SYNCIO Worker.');
@@ -64,6 +72,7 @@ export const SyncioConnectionPanel = (): JSX.Element => {
 			const client = await SyncioClient.fromStorage();
 			if (client) await client.disconnect();
 			setConnection(null);
+			setUpdate(null);
 			setState('disconnected');
 		} catch (error) {
 			setState('error');
@@ -136,6 +145,33 @@ export const SyncioConnectionPanel = (): JSX.Element => {
 							Disconnect
 						</Button>
 					</Stack>
+					{update?.updateAvailable && (
+						<Alert
+							action={
+								<Button
+									color="inherit"
+									onClick={() =>
+										void browser.tabs.create({
+											url: `${connection.workerUrl}/configure#updates`,
+										})
+									}
+									startIcon={<SystemUpdateAltIcon />}
+								>
+									Review update
+								</Button>
+							}
+							severity="info"
+						>
+							Worker {update.latestVersion} is available. This installation runs{' '}
+							{update.currentVersion}.
+						</Alert>
+					)}
+					{update && !update.updateAvailable && update.state !== 'unavailable' && (
+						<Typography color="text.secondary" variant="caption">
+							Worker {update.currentVersion} is{' '}
+							{update.state === 'ahead' ? 'a preview build' : 'up to date'}.
+						</Typography>
+					)}
 				</Stack>
 			) : (
 				<Box component="form" onSubmit={(event) => void pair(event)} sx={{ marginTop: 2 }}>

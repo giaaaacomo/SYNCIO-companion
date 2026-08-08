@@ -10,6 +10,13 @@ import browser from 'webextension-polyfill';
 
 type Fetcher = typeof fetch;
 
+export interface SyncioUpdateStatus {
+	state: 'current' | 'available' | 'ahead' | 'unavailable';
+	currentVersion: string;
+	latestVersion: string | null;
+	updateAvailable: boolean;
+}
+
 export class SyncioClient {
 	readonly workerUrl: string;
 	private readonly token: string | null;
@@ -53,6 +60,10 @@ export class SyncioClient {
 
 	async status(): Promise<SyncioStatus> {
 		return this.requestJson('/api/companion/status', { method: 'GET' }) as Promise<SyncioStatus>;
+	}
+
+	async updateStatus(): Promise<SyncioUpdateStatus> {
+		return parseUpdateStatus(await this.requestJson('/api/update/status', { method: 'GET' }));
 	}
 
 	async previewHistory(observations: SyncioObservation[]): Promise<SyncioObservationPreview> {
@@ -146,6 +157,19 @@ function parsePairingResult(value: unknown): SyncioPairingResult {
 		throw new Error('SYNCIO returned an invalid pairing response.');
 	}
 	return value as unknown as SyncioPairingResult;
+}
+
+function parseUpdateStatus(value: unknown): SyncioUpdateStatus {
+	if (
+		!isRecord(value) ||
+		!['current', 'available', 'ahead', 'unavailable'].includes(String(value.state)) ||
+		typeof value.currentVersion !== 'string' ||
+		!(typeof value.latestVersion === 'string' || value.latestVersion === null) ||
+		typeof value.updateAvailable !== 'boolean'
+	) {
+		throw new Error('SYNCIO returned an invalid update status.');
+	}
+	return value as unknown as SyncioUpdateStatus;
 }
 
 function parseJson(value: string): unknown {

@@ -38,6 +38,8 @@ treated as a completed watch; completion must be supported by native platform pr
 3. Select `firefox.zip` or, if it's unzipped, select any file in the folder
 
 Extension will be enabled until you restart Firefox.
+Open the extension popup and select the settings icon, or use Firefox's extension settings and
+select **Options**, to connect it to your SYNCIO Worker.
 
 ### Table of Contents
 
